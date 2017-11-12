@@ -1,6 +1,6 @@
 
-public class Square {
-	int squareLocation;
+public abstract class Square {
+	private int squareLocation;
 	
 	
 	protected Square(int squareLocation) {
@@ -9,5 +9,9 @@ public class Square {
 	
 	public int getSquareLocation(){
 		return this.squareLocation;
+	}
+
+	public void setMoney(Player p) {
+		p.money.setMoney(200);
 	}
 }
