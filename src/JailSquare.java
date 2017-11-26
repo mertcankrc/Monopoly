@@ -8,7 +8,7 @@ public class JailSquare extends Square{
 	}
 	
 	public void setMoney(Player p) {
-		p.money.setMoney(-this.bail.getMoney());
+		p.getPlayerMoney().setMoney(-this.bail.getMoney());
 	}
 
 }

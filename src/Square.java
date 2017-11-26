@@ -12,6 +12,6 @@ public abstract class Square {
 	}
 
 	public void setMoney(Player p) {
-		p.money.setMoney(200);
+		p.getPlayerMoney().setMoney(200);
 	}
 }

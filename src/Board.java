@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Board {
-	Square[] squareArray;
-	LuckCard[] luckCardArray;
+	private Square[] squareArray;
+	private LuckCard[] luckCardArray;
 	
 	protected Board() {
 		squareArray = new Square[40];
@@ -79,6 +79,12 @@ public class Board {
 	    for(int i = 0; i<luckCardArray.length;i++)
 	    	luckCardArray[i].setLocation(i);
 	}
+	public Square getSquare(int loc) {
+		return squareArray[loc];
+	}
 	
+	public LuckCard getLuckCard(int loc) {
+		return luckCardArray[loc];
+	}
 	
 }

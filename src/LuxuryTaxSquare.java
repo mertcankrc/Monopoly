@@ -7,6 +7,6 @@ public class LuxuryTaxSquare extends Square {
 	}
 	
 	public void setMoney(Player p) {
-		p.money.setMoney(-luxuryTax.getMoney());
+		p.getPlayerMoney().setMoney(-luxuryTax.getMoney());
 	}
 }

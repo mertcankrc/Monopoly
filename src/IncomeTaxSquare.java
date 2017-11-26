@@ -8,6 +8,6 @@ public class IncomeTaxSquare extends Square {
 	}
 	
 	public void setMoney(Player p) {
-		p.money.setMoney(-p.money.getMoney() / 10 );
+		p.getPlayerMoney().setMoney(-p.getPlayerMoney().getMoney() / 10 );
 	}
 }

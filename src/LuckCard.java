@@ -1,7 +1,7 @@
 
 public class LuckCard {
-	String type;	//type of the luck card
-	int location;	//location on the queue
+	private String type;	//type of the luck card
+	private int location;	//location on the queue
 	
 	protected LuckCard(String type, int location) {
 		this.type = type;
