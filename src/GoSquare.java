@@ -1,8 +1,8 @@
 
 public class GoSquare extends Square {
 	Money goSquareMoney;
-	protected GoSquare(int squareLocation) {
-		super(squareLocation);
+	protected GoSquare(int squareLocation,String name) {
+		super(squareLocation,name);
 		goSquareMoney = new Money(200);
 	}
 	
