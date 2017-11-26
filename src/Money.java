@@ -1,7 +1,7 @@
 
 public class Money {
-	private int money;
-	private String type = "$";
+	int money;
+	String type = "$";
 			
 	protected Money(int money) {
 		this.money = money;
@@ -13,10 +13,6 @@ public class Money {
 	
 	public void setMoney(int money) {
 		this.money += money;
-	}
-	
-	public String getType() {
-		return type;
 	}
 	
 }

@@ -1,6 +1,6 @@
 
 public class Piece {
-	private int location;
+	int location;
 	
 	protected Piece () {
 		this.location = 0;

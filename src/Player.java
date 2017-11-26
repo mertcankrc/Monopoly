@@ -1,11 +1,11 @@
 
 public class Player {
-	private int playerID;
-	private boolean bankruptcy;
-	private boolean inJail;
-	private int rolledDiceInJail;
+	int playerID;
 	Money money;
 	Piece piece;
+	boolean bankruptcy;
+	boolean inJail;
+	int rolledDiceInJail;
 	
 	protected Player(int playerID) {
 		piece = new Piece();
@@ -21,8 +21,10 @@ public class Player {
 	}
 	
 	public void checkBankruptcy() {
-		if(money.getMoney() <= 0)
+		if(money.getMoney() <= 0) {
 			bankruptcy = true;
+			System.out.println("Player" + playerID + " bankrupted!");
+		}
 	}
 	
 	public boolean getBankruptcy() {

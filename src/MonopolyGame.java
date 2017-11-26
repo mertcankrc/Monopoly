@@ -1,7 +1,7 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class MonopolyGame {
-
 	
 	static Board board;
 	static Die die1;
@@ -57,7 +57,7 @@ public class MonopolyGame {
 				if(player[i].getJail() == true) {
 					System.out.println("\nPlayer" + player[i].getPlayerID() + " is in Jail ( " + player[i].piece.getLocation() + "th square ).");
 					if(player[i].money.getMoney() > 200) {
-						System.out.println("\nPlayer" + player[i].getPlayerID() + " paid 50" + player[i].money.getType() +" and it got out of Jail.");
+						System.out.println("\nPlayer" + player[i].getPlayerID() + " paid 50$ and it got out of Jail.");
 						player[i].money.setMoney(-50);
 						player[i].setJail(false);
 					}
@@ -65,7 +65,7 @@ public class MonopolyGame {
 						die1.roll();
 						die2.roll();
 						if(player[i].getRolledDiceInJail() == 2) {
-							System.out.println("\nPlayer" + player[i].getPlayerID() + " failed to roll double 3 times and it got out of Jail.");
+							System.out.println("Player" + player[i].getPlayerID() + " failed to roll double 3 times and it got out of Jail.");
 							player[i].setRolledDiceInJail(0);
 							player[i].setJail(false);
 						}
@@ -93,7 +93,7 @@ public class MonopolyGame {
 					
 					turncount++;
 					if(turncount == 3) {		//if player rolls double 3 times in a row it goes to jail square.
-						System.out.println("\nPlayer" + player[i].getPlayerID() + " rolled double 3 times in a row.Player" + player[i].getPlayerID() + "goes to Jail.");
+						System.out.println("\nPlayer" + player[i].getPlayerID() + " rolled double 3 times in a row.Player" + player[i].getPlayerID() + " goes to Jail.");
 						player[i].setJail(true);
 						player[i].piece.setLocation(10);
 						continue;
@@ -136,25 +136,34 @@ public class MonopolyGame {
 	    case 0: 	//Go square
 	    	System.out.println("Player" + p_no + " is in Go Square.");
 	        board.squareArray[squareNO].setMoney(p);
-	        System.out.println("Player" + p_no + " gets 200" + p.money.getType() + ".Player money is " + p.money.getMoney() + p.money.getType() + ".");
+	        System.out.println("Player" + p_no + " gets 200$.Player money is " + p.money.getMoney() + "$.");
 	        break;
 	    
 	    case 4: 	//Income Tax Square
-	    	System.out.println("Player" + p_no + " is in Income Tax Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + p.money.getType()+".");
+	    	System.out.println("Player" + p_no + " is in Income Tax Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
 	    	board.squareArray[squareNO].setMoney(p);
-	    	System.out.println("Player" + p_no + " lost %10 of its money.Player money is " + p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " lost %10 of its money.Player money is " + p.money.getMoney() + "$.");
 	        break;
 	    
+	    case 5:		//Luck Card Squares
+	    case 15:
+	    case 25:
+	    case 35:
+	    	System.out.println("Player" + p_no + " is in Luck Card Square." + "Player" + p_no + " will draw a luck card." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
+	    	drawLuckCard(p,numberOfPlayers);
+	    	board.changeCardLocations();
+	    	break;
+	    	
 	    case 10:	//Jail Square
-	    	System.out.println("Player" + p_no + " is in Jail Square as visitor." + "Player" + p_no + "'s money was "+ p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " is in Jail Square as visitor." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
 	    	break;
 	    	
 	    case 20:	//Free Parking Square
-	    	System.out.println("Player" + p_no + " is in Free Parking Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " is in Free Parking Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
 	    	break;
 	    
 	    case 30:	//Go To Jail Square
-	    	System.out.println("Player" + p_no + " is in Go to Jail Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " is in Go to Jail Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
 	    	p.piece.setLocation(10);
 	    	p.setJail(true);
 	    	System.out.println("Player" + p_no + " moved to Jail Square.");
@@ -163,11 +172,11 @@ public class MonopolyGame {
 	    case 38:	//Luxury Tax Square
 	    	System.out.println("Player" + p_no + " is in Luxury Tax Square." + "Player" + p_no + "'s money was "+ p.money.getMoney());
 	    	board.squareArray[squareNO].setMoney(p);
-	    	System.out.println("Player" + p_no + " lost 75" + p.money.getType() + ".Player money is " + p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " lost 75$.Player's money is " + p.money.getMoney() + "$.");
 	    	break;
 	    
 	    default:	//Empty Square
-	    	System.out.println("Player" + p_no + " is in Empty Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + p.money.getType() + ".");
+	    	System.out.println("Player" + p_no + " is in Empty Square." + "Player" + p_no + "'s money was "+ p.money.getMoney() + "$.");
 	    	break;
 		}
 		
@@ -175,18 +184,79 @@ public class MonopolyGame {
 		checkGameEnds(numberOfPlayers);
 	}
 	
+	public static void drawLuckCard(Player p,int numberOfPlayers) {
+		String card_type = board.luckCardArray[0].getType();
+		
+		if(card_type.equals("GoToStart")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will go to GoSquare(Square 0).");
+			p.piece.setLocation(0);
+			System.out.println("Player" + p.playerID + " is in Go Square.");
+	        board.squareArray[0].setMoney(p);
+	        System.out.println("Player" + p.playerID+ " gets 200$.Player money is " + p.money.getMoney() + "$.");
+		}
+		else if(card_type.equals("GoBack3Squares")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will go back 3 squares.But player will not do the action of that square.");
+			p.piece.setLocation(p.piece.getLocation()-3);
+		}
+		else if(card_type.equals("GoToJail")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will go to Jail.");
+			p.piece.setLocation(10);
+	    	p.setJail(true);
+		}
+		else if(card_type.equals("PayPoorTax")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will pay 15$.");
+			p.money.setMoney(-15);
+			System.out.println("Player" + p.playerID + "'s money is " + p.money.getMoney() + "$.");
+		}
+		else if(card_type.equals("ChairmanOfTheBoard")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will give 50$ to each other player.");
+			for(int i=0;i<numberOfPlayers;i++) {
+				if(i+1 == p.playerID || p.getBankruptcy() == true)
+					continue;
+				if(p.money.getMoney()-50 > 0) {
+					p.money.setMoney(-50);
+					player[i].money.setMoney(50);
+				}
+			}
+		}
+		else if(card_type.equals("CrosswordCompetition")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will collect 100$.");
+			p.money.setMoney(100);
+			System.out.println("Player" + p.playerID + "'s money is " + p.money.getMoney() + "$.");
+		}
+		else if(card_type.equals("GoForward3Squares")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will go back 3 squares.But player will not do the action of that square.");
+			p.piece.setLocation(p.piece.getLocation()+3);
+		}
+		else if(card_type.equals("Jackpot")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will collect 300$.");
+			p.money.setMoney(300);
+			System.out.println("Player" + p.playerID + "'s money is " + p.money.getMoney() + "$.");
+		}
+		else if(card_type.equals("PayRichTax")) {
+			System.out.println("Player" + p.playerID + " drew " + card_type + " card." + "Player" + p.playerID + " will pay 50$.");
+			p.money.setMoney(-50);
+			System.out.println("Player" + p.playerID + "'s money is " + p.money.getMoney() + "$.");
+		}
+
+	}
+
+
+
+
+
 	public static void checkGameEnds(int numberOfPlayers) {
 		int bankruptedPlayers=0, winner=0;
 		
 		for(int i=0; i<numberOfPlayers; i++) {
-			if(player[i].getBankruptcy())
+			if(player[i].bankruptcy)
 				bankruptedPlayers++;
 			else
 				winner = i;
 		}
 		
 		if(numberOfPlayers - bankruptedPlayers == 1) {
-			System.out.println("\nPlayer" + player[winner].getPlayerID() + " won the game with " + player[winner].money.getMoney() + player[winner].money.getType() + ".");
+			System.out.println("\nPlayer" + player[winner].getPlayerID() + " won the game with " + player[winner].money.getMoney() + "$.");
 			System.out.println("\n\n\tGAME OVER");
 			System.exit(0);
 		}
