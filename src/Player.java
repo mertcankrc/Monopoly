@@ -7,9 +7,9 @@ public class Player {
 	private Money money;
 	private Piece piece;
 	
-	protected Player(int playerID) {
+	protected Player(int playerID, int cash) {
 		piece = new Piece();
-		money = new Money(200);
+		money = new Money(cash);
 		bankruptcy = false;
 		inJail = false;
 		rolledDiceInJail = 0;

@@ -1,4 +1,6 @@
-import java.util.Random;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class MonopolyGame {
@@ -6,16 +8,28 @@ public class MonopolyGame {
 	static Board board;
 	static Die die1;
 	static Die die2;
+	static Die die3;
 	static Player[] player;
 	static Scanner scanner;
+	static PrintWriter writer;
+
 	public static void main(String[] args) {
-	
+		
+		try {
+			writer = new PrintWriter("monopoly-output.txt");
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		board = new Board();
 		die1 = new Die();
 		die2 = new Die();
+		die3 = new Die();
 		
-		int numberOfIterations=0, numberOfPlayers=0;
-		String numberOfIte, numberOfP;		
+		int playerCash=0, numberOfPlayers=0;
+		String pCash, numberOfP;		
 		
 		scanner = new Scanner(System.in);
 	
@@ -28,26 +42,28 @@ public class MonopolyGame {
 			numberOfP = scanner.next();
 			numberOfPlayers = checkInteger(numberOfP);
 		}
+		
+		System.out.print("\nEnter start cash of players: ");
+		pCash = scanner.next();
+		playerCash = checkInteger(pCash);
+		
+		while ( playerCash < 1) {
+			System.out.print("\nPlease, enter positive number: ");
+			pCash = scanner.next();
+			playerCash = checkInteger(pCash);
+		}
+		
 		player = new Player[numberOfPlayers];
 		for ( int i=0 ; i<numberOfPlayers ; i++ ) {
-			player[i] = new Player(i + 1);
+			player[i] = new Player(i + 1,playerCash);
 		}
 		
-		System.out.print("\nEnter number of iteration: ");
-		numberOfIte = scanner.next();
-		numberOfIterations = checkInteger(numberOfIte);
-		
-		while ( numberOfIterations < 1) {
-			System.out.print("\nPlease, enter positive number: ");
-			numberOfIte = scanner.next();
-			numberOfIterations = checkInteger(numberOfIte);
-		}
 		
 		int turncount;
-		for( ; numberOfIterations>0; numberOfIterations--) {
+		for( int j=0; ;j++) {
 			System.out.println("\n============================================================");
-			System.out.println("Remaining number of iterations " + numberOfIterations);
-			System.out.println("============================================================");
+			System.out.println("\t\tTURN " + j);
+			System.out.println("==============================================================");
 			for (int i = 0; i<numberOfPlayers; i++) {
 				turncount = 0;
 				if(player[i].getBankruptcy() == true) {		//check bankrupt or not
@@ -106,13 +122,11 @@ public class MonopolyGame {
 					if(die1.getFaceValue() == die2.getFaceValue())
 						System.out.println("Player"+player[i].getPlayerID() + " rolled dice are equal,  rolling again" );
 					
-					
 				}while(die1.getFaceValue() == die2.getFaceValue() && turncount <3);
 			}
 			
 		}
 		
-		System.out.println("\n\n\tGAME OVER");
 	}
 	
 	
@@ -134,7 +148,6 @@ public class MonopolyGame {
 	public static void squareAction(Player p, int squareNO, int p_no, int numberOfPlayers) {
 		switch (squareNO){
 	    case 0: 	//Go square
-	    	
 	    	System.out.println("Player" + p_no + " is in Go Square." + "Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
 	        board.getSquare(squareNO).setMoney(p);
 	        System.out.println("Player" + p_no + " gets 200" + p.getPlayerMoney().getType() + ".Player money is " + p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
@@ -145,11 +158,63 @@ public class MonopolyGame {
 	    	board.getSquare(squareNO).setMoney(p);
 	    	System.out.println("Player" + p_no + " lost %10 of its money.Player money is " + p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
 	        break;
-	    
-	    case 5:		//Luck Card Squares
+	        
+	    case 5:		//RailRoad Squares
 	    case 15:
 	    case 25:
 	    case 35:
+	    	System.out.println("Player" + p_no + " is in " + board.getSquare(squareNO).getName() + ".Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    	if(board.getSquare(squareNO).getOwner() == -1) {	//if not owned
+	    		System.out.print(board.getSquare(squareNO) + " is not owned.");
+	    		int buy = buyORnot(p,board.getSquare(squareNO));
+	    		if(buy == 1) {
+	    			System.out.println("Player" + p_no + " paid " + board.getSquare(squareNO).getCost() + " and bought the square.");
+	    			System.out.println("Player" + p_no + "'s money is " + p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    		}else {
+	    			System.out.println("Player" + p_no + " does not have enough money.So player will not buy it.");
+	    		}
+	    	}else if(board.getSquare(squareNO).getOwner() == p.getPlayerID()){	//player's own square
+	    		System.out.println("Player" + p_no + " own this square.");
+	    	}else {
+	    		die3.roll();
+	    		System.out.println("Player" + p_no + " rolled " + die3.getFaceValue() + ".");
+	    		int money = 5*die3.getFaceValue() + 25;
+	    		System.out.println("Player" + p_no + " will pay " + money +" to Player" + board.getSquare(squareNO).getOwner() + ".");
+	    		p.getPlayerMoney().setMoney(-money);
+	    		player[board.getSquare(squareNO).getOwner()-1].getPlayerMoney().setMoney(money);
+	    	}
+	    	break;
+	    
+	    case 12:	//Utility squares
+	    case 28:
+	    	System.out.println("Player" + p_no + " is in " + board.getSquare(squareNO).getName() + ".Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    	if(board.getSquare(squareNO).getOwner() == -1) {	//if not owned
+	    		System.out.print(board.getSquare(squareNO) + " is not owned.");
+	    		int buy = buyORnot(p,board.getSquare(squareNO));
+	    		if(buy == 1) {
+	    			System.out.println("Player" + p_no + " paid " + board.getSquare(squareNO).getCost() + " and bought the square.");
+	    			System.out.println("Player" + p_no + "'s money is " + p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    		}else {
+	    			System.out.println("Player" + p_no + " does not have enough money.So player will not buy it.");
+	    		}
+	    	}else if(board.getSquare(squareNO).getOwner() == p.getPlayerID()){	//player's own square
+	    		System.out.println("Player" + p_no + " own this square.");
+	    	}else {
+	    		die3.roll();
+	    		System.out.println("Player" + p_no + " rolled " + die3.getFaceValue() + ".");
+	    		int money = 10*die3.getFaceValue();
+	    		System.out.println("Player" + p_no + " will pay " + money +" to Player" + board.getSquare(squareNO).getOwner() + ".");
+	    		p.getPlayerMoney().setMoney(-money);
+	    		player[board.getSquare(squareNO).getOwner()-1].getPlayerMoney().setMoney(money);
+	    	}
+	    	break;
+	    	
+	    case 2:		//Luck Card Squares
+	    case 7:
+	    case 17:
+	    case 22:
+	    case 33:
+	    case 36:
 	    	System.out.println("Player" + p_no + " is in Luck Card Square." + "Player" + p_no + " will draw a luck card." + "Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
 	    	drawLuckCard(p,numberOfPlayers);
 	    	board.changeCardLocations();
@@ -177,7 +242,25 @@ public class MonopolyGame {
 	    	break;
 	    
 	    default:	//Empty Square
-	    	System.out.println("Player" + p_no + " is in Empty Square." + "Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    	System.out.println("Player" + p_no + " is in " + board.getSquare(squareNO).getName() + ".Player" + p_no + "'s money was "+ p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    	if(board.getSquare(squareNO).getOwner() == -1) {	//if not owned
+	    		System.out.print(board.getSquare(squareNO).getName() + " is not owned.");
+	    		int buy = buyORnot(p,board.getSquare(squareNO));
+	    		if(buy == 1) {
+	    			System.out.println("Player" + p_no + " paid " + board.getSquare(squareNO).getCost() + " and bought the square.");
+	    			System.out.println("Player" + p_no + "'s money is " + p.getPlayerMoney().getMoney() + p.getPlayerMoney().getType() + ".");
+	    		}else {
+	    			System.out.println("Player" + p_no + " does not have enough money.So player will not buy it.");
+	    		}
+	    	}else if(board.getSquare(squareNO).getOwner() == p.getPlayerID()){	//player's own square
+	    		System.out.println("Player" + p_no + " own this square.");
+	    	}else {
+	    		
+	    		System.out.println("Player" + p_no + " will pay " + board.getSquare(squareNO).getRent() +" to Player" + board.getSquare(squareNO).getOwner() + ".");
+	    		p.getPlayerMoney().setMoney(-board.getSquare(squareNO).getRent());
+	    		player[board.getSquare(squareNO).getOwner()-1].getPlayerMoney().setMoney(board.getSquare(squareNO).getRent());
+	    	}
+	    	
 	    	break;
 		}
 		
@@ -185,6 +268,16 @@ public class MonopolyGame {
 		checkGameEnds(numberOfPlayers);
 	}
 	
+	private static int buyORnot(Player p, Square square) {
+		die3.roll();
+		if(die3.getFaceValue() > 4 && p.getPlayerMoney().getMoney() > square.getCost()) {
+			square.setOwner(p.getPlayerID());
+			p.getPlayerMoney().setMoney(-square.getCost());
+			return 1;
+		}
+		return 0;
+	}
+
 	public static void drawLuckCard(Player p,int numberOfPlayers) {
 		String card_type = board.getLuckCard(0).getType();
 		
@@ -242,10 +335,6 @@ public class MonopolyGame {
 
 	}
 
-
-
-
-
 	public static void checkGameEnds(int numberOfPlayers) {
 		int bankruptedPlayers=0, winner=0;
 		
@@ -259,6 +348,7 @@ public class MonopolyGame {
 		if(numberOfPlayers - bankruptedPlayers == 1) {
 			System.out.println("\nPlayer" + player[winner].getPlayerID() + " won the game with " + player[winner].getPlayerMoney().getMoney() + player[winner].getPlayerMoney().getType() + ".");
 			System.out.println("\n\n\tGAME OVER");
+			
 			System.exit(0);
 		}
 	}

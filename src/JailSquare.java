@@ -2,8 +2,8 @@
 public class JailSquare extends Square{
 	Money bail; 
 
-	protected JailSquare(int squareLocation) {
-		super(squareLocation);
+	protected JailSquare(int squareLocation,String name) {
+		super(squareLocation,name);
 		bail = new Money(50);
 	}
 	
