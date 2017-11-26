@@ -1,6 +1,6 @@
 
 public class Die {
-	private int faceValue;
+	int faceValue;
 	
 	protected Die() {}
 	
