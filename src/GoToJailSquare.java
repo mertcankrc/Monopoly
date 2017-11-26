@@ -7,7 +7,7 @@ public class GoToJailSquare extends Square{
 	}
 	
 	public void goToJail(Player p) {
-		p.piece.setLocation(10);
+		p.getPlayerPiece().setLocation(10);
 		p.setJail(true);
 	}		
 }

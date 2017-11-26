@@ -7,7 +7,7 @@ public class GoSquare extends Square {
 	}
 	
 	public void setMoney(Player p) {
-		p.money.setMoney(goSquareMoney.getMoney());
+		p.getPlayerMoney().setMoney(goSquareMoney.getMoney());
 	}
 	
 }

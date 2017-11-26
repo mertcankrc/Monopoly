@@ -1,11 +1,11 @@
 
 public class Player {
-	int playerID;
-	Money money;
-	Piece piece;
-	boolean bankruptcy;
-	boolean inJail;
-	int rolledDiceInJail;
+	private int playerID;
+	private boolean bankruptcy;
+	private boolean inJail;
+	private int rolledDiceInJail;
+	private Money money;
+	private Piece piece;
 	
 	protected Player(int playerID) {
 		piece = new Piece();
@@ -25,6 +25,7 @@ public class Player {
 			bankruptcy = true;
 			System.out.println("Player" + playerID + " bankrupted!");
 		}
+			
 	}
 	
 	public boolean getBankruptcy() {
@@ -44,5 +45,13 @@ public class Player {
 	
 	public int getRolledDiceInJail() {
 		return rolledDiceInJail;
+	}
+	
+	public Money getPlayerMoney() {
+		return money;
+	}
+	
+	public Piece getPlayerPiece() {
+		return piece;
 	}
 }
