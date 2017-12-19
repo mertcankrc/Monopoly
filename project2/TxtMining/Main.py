@@ -21,11 +21,11 @@ class Main(object):
     tf_list = []  # term frequency of words
     tf_list_50 = []  # most frequent 50 words(TF)
     idf_list = {}  # inverse document frequency of words
-    tfidf_list = []  # tf*idf values of words
+    tfidf_list = {}  # tf*idf values of words
     tfidf_list_50 = []  # most frequent 50 words(TF-IDF)
     txt_files = [TextFile for i in range(100)]  # all objects (txt,csv,pdf,docx)
     tf_list_file_name = "tf_list.csv"
-    tf_idf_list_file_name = "tfidf_list"
+    tf_idf_list_file_name = "tfidf_list.csv"
     tf_wordCloud_file_name = "tf_WordCloud.pdf"
     tf_wordCloud_title = "tf_WordCloud"
     tf_idf_wordCloud_file_name = "tfidf_wordCloud.pdf"
@@ -39,12 +39,17 @@ class Main(object):
         # term frequency operations
         self.calculateTermFrequency()  # calculates term frequency of all words
         self.tf_list_50 = list(itertools.islice(sorted(self.tf_list.items(), key=operator.itemgetter(1), reverse=True), 50))
-
-        #tf_list_obj = TxtOut(self.tf_list_file_name, self.tf_list_50)
-        #tf_wordCloud_obj = WordCloudOut(self.tf_wordCloud_file_name, self.tf_wordCloud_title, self.tf_list_50)
+        tf_list_obj = TxtOut(self.tf_list_file_name, self.tf_list_50)   # csv output for tf
+        tf_wordCloud_obj = WordCloudOut(self.tf_wordCloud_file_name, self.tf_wordCloud_title, self.tf_list_50)  # word cloud for tf
 
         # inverse document frequency operations
-        self.calculateIDF()
+        self.calculateIDF()    # calculate idf values
+
+        # term frequency * inverse document frequency operations
+        self.calculateTfIdf()   # calculate tf idf values
+        self.tfidf_list_50 = list(itertools.islice(sorted(self.tfidf_list.items(), key=operator.itemgetter(1), reverse=True), 50))
+        tfidf_list_obj = TxtOut(self.tf_idf_list_file_name, self.tfidf_list_50)  # csv output for tf-idf
+        tfidf_wordCloud_obj = WordCloudOut(self.tf_idf_wordCloud_file_name, self.tf_idf_wordCloud_title, self.tfidf_list_50)    # word cloud for tf-idf
 
     # get all file names from defined path
     def createFileList(self):
@@ -81,10 +86,12 @@ class Main(object):
 
     # calculates term frequency of all words
     def calculateTermFrequency(self):
+        print("Calculating term frequency for all words.Please wait.")
         self.tf_list = nltk.Counter(self.word_list)
 
     # calculates inverse document frequency of all words
     def calculateIDF(self):
+        print("Calculating inverse document frequency for all words.Please wait.")
         total_doc_num = len(self.tf_list)  # total documents count
         for word, value in self.tf_list.items():
             if int(value) == 1:
@@ -95,44 +102,70 @@ class Main(object):
                 print("'" + word + "'is not in word list")
                 continue
             idf = math.log(total_doc_num / doc_contains_word, 10)
-            self.idf_list[word] = [value,idf]
+            self.idf_list[word] = [value, idf]
 
-    # check how many documents contains a word
+    # check how many documents contains the word
     def docContainsWord(self, documents, word):
         count = 0
         for i in range(len(documents)):
             for search in word_tokenize(documents[i]):
-                print(search + " " + word)
                 if search == word:
                     count += 1
                     break
         return count
 
+    # calculates tf-idf for all words
+    def calculateTfIdf(self):
+        for word, value in self.idf_list.items():
+            self.tfidf_list[word] = float(value[0])*float(value[1])  # value[0] = tf value, value[1] = idf value
+
+    # print tf*idf of all words
+    def printTfIdf(self):
+        print("Words with tf*idf")
+        print("---------------------------")
+        print(self.tfidf_list_50)
+
     # print idf of all words
     def printIDF(self):
+        print("Words / Tf / IDF")
+        print("---------------------------")
         print(self.idf_list)
 
     # prints tf of all words
     def printTF(self):
-        print(self.tf_list)
+        print("Most frequent 50 words(TF)")
+        print("---------------------------")
+        print(self.tf_list_50)
 
     # prints tokenized words in all documents
     def printWordList(self):
+        print("Words")
+        print("---------------------------")
         print(self.word_list)
 
     # prints stop word list
     def printStopWords(self):
+        print("Stop Words")
+        print("---------------------------")
         print(self.stop_words)
 
     # prints file list
     def printFiles(self):
+        print("Files")
+        print("---------------------------")
         print(self.file_list)
 
     # prints text of all documents
     def printAllText(self):
+        print("Documents")
+        print("---------------------------")
         print(self.documents)
 
 
 if __name__ == '__main__':
     m = Main()
+    m.printFiles()
+    m.printStopWords()
+    m.printTF()
     m.printIDF()
+    m.printTfIdf()

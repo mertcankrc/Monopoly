@@ -1,17 +1,19 @@
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
+
 class WordCloudOut:
     word_list = []  # word list of cloud
     file_name = ""  # file name of cloud
     title = ""  # title of cloud
-    def __init__(self,file_name, title, word_list):
+
+    def __init__(self, file_name, title, word_list):
         self.file_name = file_name
         self.title = title
         self.word_list = word_list
-        self.createWordCloud(self.file_name,self.title,self.word_list)
-        
-    #create word cloud of list
+        self.createWordCloud(self.file_name, self.title, self.word_list)
+
+    # create word cloud of list
     def createWordCloud(self, file_name, title, word_list):
         text = ""
         for x, y in word_list:

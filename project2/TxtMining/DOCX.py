@@ -5,9 +5,7 @@ from TextFile import TextFile
 class DOCX(TextFile):
 
     def __init__(self, file_path, stop_words):
-        self.file_path = file_path
-        self.stop_words = stop_words
-        TextFile.file_count += 1
+        super().__init__(file_path, stop_words)
         self.read(self.file_path)
         self.lowerCaseText()
 
